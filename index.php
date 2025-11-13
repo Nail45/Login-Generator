@@ -2,11 +2,14 @@
 
 session_start();
 
-$alphabet = range('a', 'z');
-$numbers = range(0, 9);
 $result = [];
 
 if (!empty($_POST)) {
+
+    $latinConsonants = [
+        'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'
+    ];
+    $latinVowels = ['a', 'e', 'i', 'o', 'u'];
 
     $_SESSION['count'] = $_POST['count'];
     $_SESSION['letters'] = $_POST['letters'];
@@ -14,20 +17,28 @@ if (!empty($_POST)) {
 
     $start = $range[0];
     $finish = $range[1];
+    $limit = rand($start, $finish - 2);
 
     if ($_POST['letters'] === 'letters') {
-        for ($i = 1; $i <= rand($start, $finish); $i++) {
-            $result[] = $alphabet[rand(0, 25)];
+
+        while (count($result) < rand($start, $finish)) {
+            if (rand(1, 100) <= 95) {
+                $result[] = $latinConsonants[rand(0, 20)];
+            }
+            $result[] = $latinVowels[rand(0, 4)];
         }
     }
+
     if ($_POST['letters'] === 'letters-numbers') {
-        for ($i = 1; $i <= rand($start, $finish); $i++) {
-            if (rand(0, 1) === 0) {
-                $result[] = $alphabet[rand(0, 25)];
-            } else {
-                $result[] = $numbers[rand(0, 9)];
+
+        while (count($result) < $limit) {
+            if (rand(1, 100) <= 95) {
+                $result[] = $latinConsonants[rand(0, 20)];
             }
+            $result[] = $latinVowels[rand(0, 4)];
         }
+
+        $result[] = str_repeat(rand(1, 9), rand(1, 2));
     }
 
     $_SESSION['result'] = $result;
@@ -54,25 +65,17 @@ if (!empty($_POST)) {
         <div class="filter-group">
             <label for="lengthRange">Длина</label>
             <select id="lengthRange" name="count">
-                <option <?php if (!empty($_SESSION) and $_SESSION['count'] === '3-8') echo 'selected'; else {
+                <option <?php if (!empty($_SESSION) and $_SESSION['count'] === '3-6') echo 'selected'; else {
                     echo '';
-                } ?> value="3-8">3-8
+                } ?> value="3-6">3-6
                 </option>
-                <option <?php if (!empty($_SESSION) and $_SESSION['count'] === '9-14') echo 'selected'; else {
+                <option <?php if (!empty($_SESSION) and $_SESSION['count'] === '7-10') echo 'selected'; else {
                     echo '';
-                }; ?> value="9-14">9-14
+                }; ?> value="7-10">7-10
                 </option>
-                <option <?php if (!empty($_SESSION) and $_SESSION['count'] === '15-20') echo 'selected'; else {
+                <option <?php if (!empty($_SESSION) and $_SESSION['count'] === '11-15') echo 'selected'; else {
                     echo '';
-                }; ?> value="15-20">15-20
-                </option>
-                <option <?php if (!empty($_SESSION) and $_SESSION['count'] === '21-26') echo 'selected'; else {
-                    echo '';
-                }; ?> value="21-26">21-26
-                </option>
-                <option <?php if (!empty($_SESSION) and $_SESSION['count'] === '27-35') echo 'selected'; else {
-                    echo '';
-                }; ?> value="27-35">27-35
+                }; ?> value="11-15">11-15
                 </option>
             </select>
         </div>
@@ -100,5 +103,3 @@ if (!empty($_POST)) {
 </div>
 </body>
 </html>
-
-
